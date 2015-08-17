@@ -15,6 +15,7 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{acronym}
+\usepackage{graphicx}
 
 \title{Measurement uncertainties in x-ray computed tomography}
 \author{Joshua Greenhalgh}
@@ -29,7 +30,9 @@
 
 \chapter{Introduction}
 
-\begin{tabular}{|c|cccc|}
+\begin{table}
+\caption{Blah}
+\begin{tabular}{c|cccc}
 \toprule
 {} Magnification &     S0D0 &     S1D0 &     S0D1 &     S1D1 \\
 \midrule
@@ -45,6 +48,7 @@
 4.0000        &  29.9000 &  29.8781 &  29.8955 &  29.8760 \\
 \bottomrule
 \end{tabular}
+\end{table}
 
 \chapter{Litrature Review}
 \section{Metrology}
@@ -54,6 +58,14 @@
 \section{Spherical Projections}
 \section{Beam Hardening}
 \chapter{Results}
+
+\begin{figure}[h!]
+  \caption{Blah}
+  \centering
+    \includegraphics[width=\textwidth]{figures/output_6_0.png}
+\end{figure}
+
+
 \section{Measurement Uncertainty}
 \section{Image Resolution}
 \section{Analytic MTF}
