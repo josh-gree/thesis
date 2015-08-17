@@ -18,4 +18,14 @@ What figures do I want?
 
 -> Line profiles comparison of polychromatic and mono
 
+-> plot points of segmented sphere?? Some slices?? Low/High magnification (visible blur?? defo in the projections -> maybe plot these??)
+
 Reporting of T-test results shows that there is a significant difference in a particular direction for the variances between the treatments -> low magnification significant evidence that det offset has higher uncertainty than source offset, High magnification significant evidence that source offset has higher uncertainty than det offset. Fitted linear models have significant slope terms negative for det offset and positive for source offset -> should I look at the fits for the means as well or is this irrelevant?
+
+Need to do fits -> linear model magnification to radius/var (small and large sample comparison) (this next!!! After dinner!!)
+
+Fits -> Look at individual radii for each exp for each mag in each treatment -> S1D1 means model is clearly quadratic...
+
+Boxplots at each magnification for each treatment...!
+
+Need to do T-tests -> !! D0S1 vs D1S0 at low and high mags...
