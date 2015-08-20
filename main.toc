@@ -10,6 +10,6 @@
 \contentsline {chapter}{\numberline {4}\spacedlowsmallcaps {Results}}{17}{chapter.4}
 \contentsline {subsection}{\numberline {4.0.1}Introduction}{17}{subsection.4.0.1}
 \contentsline {section}{\numberline {4.1}Measurement Uncertainty}{17}{section.4.1}
-\contentsline {section}{\numberline {4.2}Image Resolution}{20}{section.4.2}
-\contentsline {section}{\numberline {4.3}Analytic MTF}{20}{section.4.3}
-\contentsline {chapter}{\numberline {5}\spacedlowsmallcaps {Conclusion}}{21}{chapter.5}
+\contentsline {section}{\numberline {4.2}Image Resolution}{22}{section.4.2}
+\contentsline {section}{\numberline {4.3}Analytic MTF}{22}{section.4.3}
+\contentsline {chapter}{\numberline {5}\spacedlowsmallcaps {Conclusion}}{23}{chapter.5}

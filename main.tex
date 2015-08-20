@@ -103,7 +103,7 @@ H_0: \sigma_{S1D0,1.5} = \sigma_{S0D1,1.5}
 H_1: \sigma_{S1D0,1.5} < \sigma_{S0D1,1.5}
 \]
 
-The test resulted in a p-value of $6.431e-06 < 0.01$, so the null hypothesis can be rejected at the 95\% level suggesting that there is significant evidence that $\sigma_{S1D0,1.5} < \sigma_{S0D1,1.5}$. For the second test we will compare the measurement variance between $S1D0$ and  $S0D1$ at a magnification of $4.0$. The null and alternative hypothesis's are given by;
+The test resulted in a test statistic of $F=0.1781$ and p-value of $6.431e-06 < 0.01$ (m=29,n=29 degrees of freedom), so the null hypothesis can be rejected at the 95\% level suggesting that there is significant evidence that $\sigma_{S1D0,1.5} < \sigma_{S0D1,1.5}$. For the second test we will compare the measurement variance between $S1D0$ and  $S0D1$ at a magnification of $4.0$. The null and alternative hypothesis's are given by;
 
 \[
 H_0: \sigma_{S1D0,4.0} = \sigma_{S0D1,4.0}
@@ -112,13 +112,33 @@ H_0: \sigma_{S1D0,4.0} = \sigma_{S0D1,4.0}
 H_1: \sigma_{S1D0,4.0} > \sigma_{S0D1,4.0}
 \]
 
-The test resulted in a test statistic of a p-value of $2.347e-06 < 0.01$, so the null hypothesis can be rejected at the 95\% level suggesting that there is significant evidence that $\sigma_{S1D0,4.0} > \sigma_{S0D1,4.0}$. (NOTE: Need to report properly - give test statistic and critical value based on df = 29,29)
+The test resulted in a test statistic $F = 0.1619$ and a p-value of $2.347e-06 < 0.01$ (m=29,n=29 degrees of freedom), so the null hypothesis can be rejected at the 95\% level suggesting that there is significant evidence that $\sigma_{S1D0,4.0} > \sigma_{S0D1,4.0}$.
 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=\textwidth]{figures/output_34_0.png}
     \caption{Showing the variation of the radius measurement with a sample of 30 at each magnification.}
         \label{stdmeasuredradiusxsamples}
+\end{figure}
+
+The result of the two F-tests reinforces the hypothesis that there exists contrasting trends in measurement uncertainty between $S0D1$ and $S1D0$. It seems clear that an increase in magnification leads to a decrease in measurement variability for $S0D1$ and an increase in the variability for $S1D0$ - with an intersection point (position of equal variability) at a magnification of between $2.5$ and $3.0$. The level of variability in the measurement also relates to the relative error in the measurement; high variability leads to a larger relative error. This can be clearly seen in the error and variability trends of the two treatments $S0D1$ and $S1D0$.
+
+Further to the measurements of the radii, the position of the spheres centers were also calculated. Again all measurements resulted in a systematic bias; figure \ref{spherecentre} shows the average position for a range of magnifications.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/output_18_0.png}
+    \caption{Showing the measured position of the spheres centre}
+        \label{spherecentre}
+\end{figure}
+
+The average position of the centre does not exhibit any clear trend with respect to magnification. There does however seem to be differences between the individual treatments. Both $S0D0$ and $S0D1$ show little variation in the measured position as magnification varies, whereas $S1D1$ and $S1D0$ exhibit much greater fluctuations in the measured position. The standard deviation of the measured position, taken over ten repetitions at each magnification, is shown in figure \ref{spherecentrevar}. The logarithmic plot shows that the variation is an order of magnitude larger for $S1D0$ and $S1D1$ than for $S0D1$. This contrasts with the variation in the measured radius for which the standard deviation was approximately of the same magnitude for both $S1D0$ and $S0D1$.   
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/output_22_0.png}
+    \caption{Showing the standard deviation of the measured position of the spheres centre}
+        \label{spherecentrevar}
 \end{figure}
 
 \section{Image Resolution}
