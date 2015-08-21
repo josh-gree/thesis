@@ -26,6 +26,10 @@ Need to do fits -> linear model magnification to radius/var (small and large sam
 
 Fits -> Look at individual radii for each exp for each mag in each treatment -> S1D1 means model is clearly quadratic...
 
-Boxplots at each magnification for each treatment...!
+Boxplots at each magnification for each treatment...! Look shit variation too small!
 
 Need to do T-tests -> !! D0S1 vs D1S0 at low and high mags...
+
+polychromatic -> 2 different materials....Al and Ag (low and high density) -> should see lower profile for higher density since attenuation is inversely proportional to density (this seems wrong more dense => higher attenuation?!)
+https://w9.siemens.com/cms/oemproducts/Home/X-rayToolbox/spektrum/Pages/Default.aspx
+http://physics.nist.gov/cgi-bin/Xcom/xcom2
