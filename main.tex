@@ -55,11 +55,59 @@
 \section{Computed Tomography}
 \section{Simulation}
 \chapter{Experimental Methodolgy}
+\section{Intoduction}
+
+Section in which I outline what will follow in this chapter, also link to previous chapter!
+
 \section{Spherical Projections}
+
+The simulation of an X-ray computed tomography (XCT) system was undertaken using a previously developed set of Matlab routines (ref to avon). These routines consisted of functions that created projections of an analytically defined sphere and also produced a reconstructed volume via the FDK method (ref to feildkamp and literature). The simulation of a single projection, under the assumption of a point source and point like detector elements, consists of the following general process;
+
+\begin{enumerate}
+\item For the $i^{th}$ element in the detector array form the ray which connects the source at position $(s_x,s_y,s_z)^T$ with the detector element at position $(d_x^i,d_y^i,d_z^i)^T$.
+\item Calculate the intersection of this ray with the sphere defined by $\|x - c\| = r^2$ where $c = (c_x,c_y,c_z)^T$ is the spheres centre and $r$ is its radius.
+\item For each ray that passes through the sphere calculate the distance between its entry and exit points.
+\item Associate each path length with the correct detector element and form an array of path lengths.
+\end{enumerate}
+
+Projections are calculated at a range of angles, for each angle the source and detector elements are rotated around the sphere. The detectors are arranged in a rectangular array such that both the source and detector elements lie in parallel planes. The distances from the source to the axis of rotation ($D_{s\rightarrow r}$) and from the axis of rotation to the detector ($D_{r \rightarrow d}$) are of particular importance - the ratio $\frac{D_{s\rightarrow r}+D_{r \rightarrow d}}{D_{s\rightarrow r}}$ determines the magnification of the system. This means that an object of length $x$ constrained to be on the plane parallel to the detector and containing the axis of rotation will appear to have a length of $\frac{x(D_{s\rightarrow r}+D_{r \rightarrow d})}{D_{s\rightarrow r}}$ on the detector. Intuitively magnification can be thought of as being high when the source is close to the object and low when it is far away - assuming a fixed distance from the source to the detector. A birds eye view of the XCT system is shown in figure \ref{xctsystem} and a view of the detector elements (for a $4\times4$ array) is shown in figure \ref{3dxctsystem}.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/XCTsystem.png}
+    \caption{A digram showing a birds eye view of the XCT system}
+    \label{xctsystem}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/3dxctsystem.png}
+    \caption{A 3D view of the XCT system showing the detector array}
+    \label{3dxctsystem}
+\end{figure}
+
+In order to simulate more realistic source and detector behavior the projection process is repeated many times at each angle with random offsets applied to the positions of the source and each detector element, the resulting projection values being the mean of the repetitions. In the case of the detector elements this entails adding an independent random offset to each detector element - not the same offset to all.
+
+The experiments undertaken for this project involved the simulation of projections at $1000$ angles between $0$ and $2\pi$. The choice of this particular number of projections was chosen so as maximize the accuracy of the reconstructed volume whilst minimizing computational expense - an investigation of the effect of the number of projections used was not undertaken. The object imaged was a sphere of radius $30mm$ with centre at $c = (0,0,0)^T$. An array of $301\times301$ detector elements was used extending over an area of $400mm\times400mm$. Four experimental treatments were investigated;
+
+\begin{enumerate}
+\item $S0D0$ - Ideal point like source and detector elements.
+\item $S1D0$ - Random position offset applied to source (each offset drawn from ), point like detector elements.
+\item $S0D1$ - Random position offset applied independently to each detector element (each offset drawn from ), point like source.
+\item $S1D1$ - Random position offsets applied to both the source and the detector elements (each offset drawn from same distributions as above).
+\end{enumerate}
+
+For each treatment projections were simulated at each of $10$ equally spaced magnifications between $1.5$ and $4.0$. At a particular magnification $10$ sets of projections were simulated. This leads to a total of $400$ projections and reconstructions - consisting of four treatments, ten magnifications and ten repetitions at each magnification.
+
+
+
+
+
+
 \section{Beam Hardening}
 \chapter{Results}
 
-\subsection{Introduction}
+\section{Introduction}
 
 Section in which I outline what will follow in this chapter, also link to previous chapter!
 
