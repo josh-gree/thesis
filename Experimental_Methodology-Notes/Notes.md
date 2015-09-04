@@ -27,4 +27,20 @@
 
 ### Average deviation as a measure of precision
 - we should use the std since it is in the same units as the measurement
-- we could look at relative uncertainty -> $\sigma/x_t$ 
+- we could look at relative uncertainty -> $\sigma/x_t$
+
+
+
+# Spherical projections
+- describe the process of collecting measurements
+1) projections
+2) reconstruction
+3) segmentation
+4) spherical fit
+
+- Describe improvements to Avon's code that enabled a significant speed up in the collection of results...
+
+## Projections
+- raytracing, given source and detector position and analytical def of sphere calculate intersection points and distance ray passes through the sphere associate this distance to a detector element create projection pixel from values associated to each detector then rotate and repeat... -> need to write this in mathematical formalism...
+
+ 
