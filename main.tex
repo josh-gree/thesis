@@ -59,7 +59,7 @@
 
 Section in which I outline what will follow in this chapter, also link to previous chapter!
 
-\section{Spherical Projections}
+\section{Spherical Projections and Reconstruction}
 
 The simulation of an X-ray computed tomography (XCT) system was undertaken using a previously developed set of Matlab routines (ref to avon). These routines consisted of functions that created projections of an analytically defined sphere and also produced a reconstructed volume via the FDK method (ref to feildkamp and literature). The simulation of a single projection, under the assumption of a point source and point like detector elements, consists of the following general process;
 
@@ -92,12 +92,66 @@ The experiments undertaken for this project involved the simulation of projectio
 
 \begin{enumerate}
 \item $S0D0$ - Ideal point like source and detector elements.
-\item $S1D0$ - Random position offset applied to source (each offset drawn from ), point like detector elements.
-\item $S0D1$ - Random position offset applied independently to each detector element (each offset drawn from ), point like source.
+\item $S1D0$ - Random position offset applied to source (each component of the offset drawn from standard normal distribution), point like detector elements.
+\item $S0D1$ - Random position offset applied independently to each detector element (each component of the offset drawn from standard normal distribution), point like source.
 \item $S1D1$ - Random position offsets applied to both the source and the detector elements (each offset drawn from same distributions as above).
 \end{enumerate}
 
 For each treatment projections were simulated at each of $10$ equally spaced magnifications between $1.5$ and $4.0$. At a particular magnification $10$ sets of projections were simulated. This leads to a total of $400$ projections and reconstructions - consisting of four treatments, ten magnifications and ten repetitions at each magnification.
+
+The resulting reconstructions consisted of a $301/times301/times301$ array of voxels that extended from $-35mm$ to $35mm$ in all three coordinate directions.
+
+\section{Measurement}
+
+From a reconstructed volume it was necessary to obtain a series of measurements relating to the sphere. This was achieved by the extraction of surface points via a thresholding operation and edge detection and then the fitting of an analytical sphere to the surface data. The Matlab function post\_proc\_fixed\_thresh.m is used to achieve these operations. Thresholding was undertaken by simply defining all voxels greater than a value of $0.5$ to be on the interior of the sphere and those smaller to be on the exterior. This resulted in a 3D array consisting of ones (for interior points) and zeros (for exterior points). By applying Matlab's inbuilt edge detection function to this array it was possible to arrive at a new array such that the voxels took a value of one on the surface of the sphere and a zero everywhere else. Using the surface data a sphere was fitted using a least squares method which resulted in the parameters of a sphere in terms of the array indices. In order to convert from array indices to actual physical coordinates it was necessary, in the case of the spheres radius, to multiply the values by the voxel size ($\Delta v = \frac{70}{301}$) and also for the position of the centre to offset by subtracting $35mm$. So given a fitted sphere with the following parameters;
+
+\[
+r = 128
+\]
+\[
+C_x = C_y = C_z = 150
+\]
+
+The parameters given in physical coordinates would be given by;
+
+\[
+r = 128\Delta v
+\]
+\[
+C_x = C_y = C_z = -35 + 150\Delta v
+\]
+
+The value of the radius gained from this procedure along with the position of the spheres centre were used in order to analyse the XCT system's uncertainty. Along with the above described method for determining the spheres radius another method was implemented in order to validate the results - this method will be described in the next section.
+
+\section{Calculation of the Modulation Transfer Function}
+
+The calculation of the Modulation Transfer Function (MTF) was undertaken via two separate methods. The methods differ in how edge profiles were extracted from the reconstructed volume. The first method used all the voxels in a plane via a polar reparameterisation of the voxel coordinates whilst the second method involved the 3D interpolation of the volume along rays emanating from the spheres centre.
+
+The need for interpolation arises since the change from interior to exterior of the sphere takes place over around 2 voxels. This means that there is not enough information to accurately calculate the MTF. It was also desirable to calculate the MTF in directions other than the coordinate axis.
+
+The first method implemented is described in ref{A simple approach...}. From the voxel array it is possible to extract three slices (xy-plane,xz-plane and the yz-plane). The voxels in each slice can be given coordinates in the following way;
+
+\[
+V_{i,j} \rightarrow (-35+\Delta x i,-35+\Delta y j)
+\]
+\[
+i,j = 0,\dots,300
+\]
+\[
+\Delta x = \frac{70}{300} = \Delta y
+\]
+
+In order to form an edge profile from the slice we convert from cartesian coordinates to polar, only taking account of the radial distance from the origin. A given voxel with cartesian coordinates $(x,y)$ has radial distance $r = x^2 + y^2$. By sorting the voxels by radial distance are able to obtain an edge profile, however this profile is multi-valued in that there exist multiple voxels with the same radial distance. To produce a one-to-one mapping between radial distance and voxel intensity we associate to a particular radial distance the average of all voxels at this distance. The resulting profile is however rather noisy and as such is not suitable for calculating the MTF - in order to rectify this situation the method in ref{sigmoid ref} has been used. This method takes the noisy edge profile and fits a sigmoid function of the following form;
+
+\[
+S(x) = \frac{a}{1+e^{-b(x-c)}} + d
+\]
+
+The sigmoid function is chosen since it takes the approximate form of a step function for certain values of the parameters. An example of this function is shown in fig{sigmoid}. Once the parameters of the fitted function are known it is possible to sample the edge at $100$ points between $25mm$ and $35mm$ giving a sample rate of $10$ samples/$mm$. The sampled edge profile is then numerically differentiated and by taking the absolute value of the FFT we arrive at the MTF of the system. As a by product of this technique for calculating the MTF it is also possible to arrive at an independent estimate of the spheres radius. The parameter $d$ in the sigmoid function determines the point at which the function behaves like a step and this can be used to estimate the distance at which the transition from interior to exterior of the sphere occurs. This particular technique for measuring the radius is only possible due to the symmetrical nature of the object being imaged.
+
+
+
+
 
 
 
@@ -133,7 +187,16 @@ We can also look at the relative error of the measurements since we are in the p
 
 It should be noted that all the measured errors are at the sub-voxel level; the largest error seen is around $0.4\%$ which equates to an actual deviation from the true value of around $0.12$mm less then $2\%$ of the voxel width ($4.2$mm).
 
-In figure \ref{stdmeasuredradius} we can see the variation (standard deviation) in the measurement in relation to magnification. This data is only available for $S1D0$, $S0D1$ and $S1D1$. This is because with an ideal source and detector the measurement is in effect deterministic. The projections do have very small additive noise applied but this is not enough to effect the reconstructions and hence the measurements in any meaningful way.
+As an independent check on the trends observed it was also possible to calculate an estimate of the radius from the parameters of the function fitted to calculate the MTF. In figure \ref{mtfradius} we see the relative error of the measurements gained via this method. As can be seen in the figure the general trends  are replicated via this secondary method however the actual errors are an order of magnitude smaller. The use of this method for calculating the radius when applied to the $S0D0$ treatment resulted in very different measurements and so is not shown in the figure. (WHY IN CONCLUSIONS)
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/output_35_0.png}
+    \caption{Showing the variation of the radius measurement at each magnification.}
+        \label{mtfradius}
+\end{figure}
+
+In figure \ref{stdmeasuredradius} we can see the variation (standard deviation) in the measurement in relation to magnification. This data is only available for $S1D0$, $S0D1$ and $S1D1$. This is because with an ideal source and detector the measurement is in effect deterministic. The projections do have very small additive noise applied but this is not enough to effect the reconstructions and hence the measurements in any meaningful way. The trend in relative error is of a similar nature however the errors are an order of magnitude smaller than in the method used initially.
 
 \begin{figure}[h!]
   \centering
