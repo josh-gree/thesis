@@ -9,11 +9,12 @@
 \contentsline {section}{\numberline {3.2}Spherical Projections and Reconstruction}{15}{section.3.2}
 \contentsline {section}{\numberline {3.3}Measurement}{17}{section.3.3}
 \contentsline {section}{\numberline {3.4}Calculation of the Modulation Transfer Function}{18}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Polar Method}{19}{subsection.3.4.1}
 \contentsline {section}{\numberline {3.5}Beam Hardening}{19}{section.3.5}
 \contentsline {chapter}{\numberline {4}\spacedlowsmallcaps {Results}}{21}{chapter.4}
 \contentsline {section}{\numberline {4.1}Introduction}{21}{section.4.1}
 \contentsline {section}{\numberline {4.2}Measurement Uncertainty}{21}{section.4.2}
 \contentsline {section}{\numberline {4.3}Polychromatic Projections}{26}{section.4.3}
-\contentsline {section}{\numberline {4.4}Image Resolution}{26}{section.4.4}
-\contentsline {section}{\numberline {4.5}Analytic MTF}{26}{section.4.5}
-\contentsline {chapter}{\numberline {5}\spacedlowsmallcaps {Conclusion}}{29}{chapter.5}
+\contentsline {section}{\numberline {4.4}Image Resolution - MTF half width}{26}{section.4.4}
+\contentsline {section}{\numberline {4.5}Analytic MTF}{31}{section.4.5}
+\contentsline {chapter}{\numberline {5}\spacedlowsmallcaps {Conclusion}}{33}{chapter.5}

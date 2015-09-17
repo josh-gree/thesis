@@ -129,6 +129,7 @@ The calculation of the Modulation Transfer Function (MTF) was undertaken via two
 
 The need for interpolation arises since the change from interior to exterior of the sphere takes place over around 2 voxels. This means that there is not enough information to accurately calculate the MTF. It was also desirable to calculate the MTF in directions other than the coordinate axis.
 
+\subsection{Polar Method}
 The first method implemented is described in ref{A simple approach...}. From the voxel array it is possible to extract three slices (xy-plane,xz-plane and the yz-plane). The voxels in each slice can be given coordinates in the following way;
 
 \[
@@ -254,7 +255,139 @@ The average position of the centre does not exhibit any clear trend with respect
 
 \section{Polychromatic Projections}
 
-\section{Image Resolution}
+\section{Image Resolution - MTF half width}
+
+The calculation of the MTF half width was obtained from ten repetitions in each of the four treatments (S0D0, S1D0, S0D1 and S1D1) at the same set of magnifications as used in the analysis of the radius. The MTF analysis was performed on the same voxel data as was used previously. Two methods were used in order to obtain the MTF's half width - an approach based on radial rebinning of voxels on coordinate slices (polar method) and one based on the 3D interpolation of voxel data along radial lines (interpolation method).
+
+Each method was applied to data taken from the three coordinate planes (yz-plane, xz-plane and the xy-plane). As can be seen in figure \ref{interpmtf} and figure \ref{polarmtf} the two methods show a close agreement in the general trends seen - treatment $S0D0$ is not shown since it has much larger half width values and so the other trends are less visible. Although it was expected that there would be some variation in the measurement using data taken from different planes, due to the non-exact nature of the FDK reconstruction method, this does not seem to be the case in any significant way. The various trends can be seen more clearly in figures \ref{S0D0half}, \ref{S1D0half}, \ref{S0D1half} and \ref{S1D1half}.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/interpmtf.png}
+    \caption{Showing the standard deviation of the measured position of the spheres centre}
+        \label{interpmtf}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/polarmtf.png}
+    \caption{Showing the standard deviation of the measured position of the spheres centre}
+        \label{polarmtf}
+\end{figure}
+
+The $S0D0$ treatment, shown in figure \ref{S0D0half}, exhibits a linearly increasing trend but again as in the radius measurements also shows a tendency to be rather noisy. The half width measurements in the yz-plane obtained via the polar method and the measurements in the xz-plane obtained via the interpolation method (shown in \fig{howstrange}) follow an almost exactly equal trend for all magnifications. The two series agree almost exactly at all points - having checked repeatedly for any errors in the data analysis a reason for this is unknown.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/S0D0half.png}
+    \caption{Showing the standard deviation of the measured position of the spheres centre}
+        \label{S0D0half}
+\end{figure}
+
+For the $S1D0$ treatment (shown in figure \ref{S1D0half}) the half width measurements show a trend which behaves like an exponential decay curve. The following functional form was fitted to the data;
+
+\[
+f(x) = A \; e^{-Bx} + C.
+\]
+
+
+\begin{table}
+\caption{}
+\label{loghalffit}
+\begin{tabular}{c|cccc}
+\toprule
+{} Method and plane &     A &     B &     C  & RMSE\\
+\midrule
+Polar, yz-plane         &  1.27086332  &1.08678843 & 0.49305544 & 0.007\\
+Polar, xz-plane        &  0.61132934 & 0.57503022 & 0.43620568 & 0.002\\
+Polar, xy-plane      &  0.6119399   & 0.58143897 & 0.43846334 & 0.002\\
+Interp, yz-plane       &  0.56147878 & 0.50306134 & 0.42517996 & 0.004\\
+Interp, xz-plane       &  1.07020621 & 0.98627921 & 0.48786935 & 0.005\\
+Interp, xy-plane       &  0.5631341  & 0.51761579 & 0.42994612  & 0.004\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The resulting parameters are shown in table \ref{loghalffit}, along with the RMSE of the fitted model.
+
+
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/S1D0half.png}
+    \caption{Showing the standard deviation of the measured position of the spheres centre}
+        \label{S1D0half}
+\end{figure}
+
+The $S0D1$ treatment shows a clear linearly increasing trend in the half widths as magnification increases - this can be seen in figure \ref{S0D1half}. Again a linear function of the following form was fitted to the data;
+
+\[
+f(x) = Ax + B
+\]
+
+
+\begin{table}
+\caption{}
+\label{linhalffit}
+\begin{tabular}{c|ccc}
+\toprule
+{} Method and plane &     A &     B &  RMSE\\
+\midrule
+Polar, yz-plane         &  0.31720477 & 0.002951    & 0.002\\
+Polar, xz-plane        &  0.31003435 & 0.01573987 &  0.001\\
+Polar, xy-plane      &  0.31029769 & 0.01497927 &  0.001\\
+Interp, yz-plane       &  0.31577521 & 0.00678286 &  0.004\\
+Interp, xz-plane       &  0.31692495 & 0.0025919 &  0.008\\
+Interp, xy-plane       &  0.31401344 & 0.01062478 &  0.007\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The fitted parameters of the model are shown in table \ref{linhalffit}.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/S0D1half.png}
+    \caption{Showing the standard deviation of the measured position of the spheres centre}
+        \label{S0D1half}
+\end{figure}
+
+In the S1D1 treatment, in which offsets are applied to both the source and detector positions, the trend in half width is clearly non-linear - this can be seen in figure \ref{S1D1half}. In order to test if this trend is a simple linear combination of the two fitted functions for $S1D0$ and $S0D1$ the following model was fitted to the data;
+
+\[
+g(x) = A \; e^{-Bx} + Cx + D
+\]
+
+The resulting model parameters are shown in table \ref{explinhalffit}.
+
+\begin{table}
+\caption{}
+\label{explinhalffit}
+\begin{tabular}{c|ccccc}
+\toprule
+{} Method and plane &     A &     B  & C & D&  RMSE\\
+\midrule
+Polar, yz-plane     &    -3.01767128 & 2.35156778 & -0.02125605 & 0.56372268 & 0.0005\\
+Polar, xz-plane     &   -3.70124999 & 2.50146776 & -0.02145405 & 0.56063008 & 0.0007\\
+Polar, xy-plane     & -3.35156301 & 2.41166283 & -0.02300553 & 0.56631523 & 0.0004\\
+Interp, yz-plane     & -3.71780806 & 2.49623461 & -0.02091193 & 0.56238338 & 0.001\\
+Interp, xz-plane     &  -2.68587678 & 2.29689752 & -0.02093834 & 0.56232039 & 0.001\\
+Interp, xy-plane     &  -4.80161526 & 2.72103386 & -0.0174492  & 0.54856493 & 0.0006\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/S1D1half.png}
+    \caption{Showing the standard deviation of the measured position of the spheres centre}
+        \label{S1D1half}
+\end{figure}
+
+
+
+
 
 \section{Analytic MTF}
 
