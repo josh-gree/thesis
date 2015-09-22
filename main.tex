@@ -27,7 +27,6 @@
 \include{FrontBackMatter/abstract}
 \include{FrontBackMatter/contents}
 
-
 \chapter{Introduction}
 
 \begin{table}
@@ -52,6 +51,27 @@
 
 \chapter{Litrature Review}
 \section{Metrology}
+The ability to accurately measure physical properties is extremely important in a range of areas of human endeavour. Metrology is the science of measurement. It comprises of three main areas; the definition of internationally accepted standards of measurement, the realisation of these units via scientific methods and the establishment of traceability chains that allow all measurements to be given with a quantified uncertainty.
+
+Due to the importance of measurement in the economic life of society a range of international treaties and agreements have been implemented in order to create a consistent standard of measure across national boundaries. The Bureau International des Poids et Mesures (BIPM) is the international coordinating body that maintains the consistency of the measurement system. Many countries have their own national measurement institutes, such as the National Physical Laboratory (NPL) in the UK and the National Institute of Standards and Technology (NIST) in the US, which work alongside BIPM.
+
+The international system of measurement units (SI system) consists of seven base units upon which many derived units can be defined. One of the main duties of BIPM is to create definitions for these base units and to agree upon methods for realising these quantities. The metre (m) was originally defined to be the length of a specific rod of platinum-iridium kept in Paris, however it is now defined to be the length of the path travelled by light in a vacuum during a time interval of 1/299 792 458 of a second. In order to realise the metre at the primary level, that of national metrological institutes, the wavelength of an iodine-stabilised helium-neon laser is used.
+
+All measurements are imperfect; they are subject to some amount of error. Error is defined to be the deviation of a measurement from the true value of the measurand. Uncertainty can be thought of as a quantitative measure of the measurements quality, which enables the comparison of independently acquired measurements. The definition of uncertainty, given in [REF6], is a;
+
+``parameter, associated with the result of a measurement, that characterizes the dispersion of the values that could reasonably be attributed to the measurand.''
+
+It is of upmost importance, for both practical and legal reasons, that any measurement can be traced, via an unbroken chain of comparisons each with a stated uncertainty, back to the international standard. The National Physical Laboratory has produced an introduction metrology which can be found in [REF3]
+
+\section{Industrial CT}
+
+Computed Tomography (CT) is a method of using penetrating electromagnetic waves, usually x-rays, to produce a reconstruction of the internal structure of an object. The initial technology began with the work of Hounsfield [REF5], for which he won the 1979 Nobel Prize. The mathematical basis for this work, the Radon transform, was developed by Johann Radon [REF7] in 1917. Hounsfield’s original work had its main application in the medical sphere - enabling, for the first time, the non-invasive diagnosis of many medical conditions. The technology has since become popular for material analysis and non-destructive testing in industry. In recent times CT has been applied to the problem of dimensional metrology as an alternative to 3D coordinate measurement systems.
+
+The increasing complexity of modern industrial components means that the standard tools for producing dimensional measurements, that of coordinate measuring machines (CMM’s), are unable to control for all component tolerances. In using a CMM it is not possible produce measurements of the internal structure of a component, only external geometries can be measured. One of the fundamental benefits of using CT for metrology is the ability to determine both the internal and external geometries of a component in a single process. The use of CT also enables the dual determination of material properties, such as defects, whilst also making dimensional measurements. Using a CT to take dimensional measurements also has the added benefit of being able to perform measurement of the whole geometry in a single scan; when using a CMM scan time is an increasing function of the number of properties to be measured.
+
+The process of taking dimensional measurements via CT is subject to many sources of uncer- tainty. These include; the size of the x-ray focal spot and its time dependent drift, the performance of the detector cells, the magnification used, number of projections acquired, the reconstruction algorithm used and any data post-processing such as surface extraction and fitting. The complexity of a CT machine and the many sources of possible uncertainty make the statement of a total measurement uncertainty a difficult proposition. An excellent outline of the use of CT in industry is given in [REF1] and the sources of measurement uncertainty are outlined in [REF4].
+
+
 \section{Computed Tomography}
 \section{Simulation}
 \chapter{Experimental Methodolgy}
@@ -150,16 +170,74 @@ S(x) = \frac{a}{1+e^{-b(x-c)}} + d
 
 The sigmoid function is chosen since it takes the approximate form of a step function for certain values of the parameters. An example of this function is shown in fig{sigmoid}. Once the parameters of the fitted function are known it is possible to sample the edge at $100$ points between $25mm$ and $35mm$ giving a sample rate of $10$ samples/$mm$. The sampled edge profile is then numerically differentiated and by taking the absolute value of the FFT we arrive at the MTF of the system. As a by product of this technique for calculating the MTF it is also possible to arrive at an independent estimate of the spheres radius. The parameter $d$ in the sigmoid function determines the point at which the function behaves like a step and this can be used to estimate the distance at which the transition from interior to exterior of the sphere occurs. This particular technique for measuring the radius is only possible due to the symmetrical nature of the object being imaged.
 
+\subsection{Interpolation Method}
+
+The second method for calculating the MTF was based on the 3D interpolation of the reconstructed volume data. The calculation was performed three times on each of the reconstructed volumes (xy-plane,xz-plane and the yz-plane). In each plane the coordinates of 100 points were calculated along four rays emanating from the centre of the sphere. The points were constructed such that they covered a line segment centered on the boundary of the sphere extending 5mm inside the sphere and 5mm outside the sphere. The coordinates of the points needed to be converted into array coordinates in order to interpolate the volume array.
+
+The method for calculating the points was as follows;
+
+\begin{itemize}
+\item Select a vector in the direction of a given ray - $(a,b,c)^T$
+\item Normalise the vector giving - $\frac{1}{\sqrt{a^2+b^2+c^2}}(a,b,c)^T$
+\item Construct the vector form of the line - $l = \frac{t}{\sqrt{a^2+b^2+c^2}}(a,b,c)^T$
+\item Find a $t_0$ such that $|\frac{t_0}{\sqrt{a^2+b^2+c^2}}(a,b,c)^T| = 25 \implies t_0^2 = 25$
+\item Find a $t_1$ such that $|\frac{t_1}{\sqrt{a^2+b^2+c^2}}(a,b,c)^T| = 35 \implies t_1^2 = 35$
+\item Evaluate the line at 100 equally spaced values ranging from $t_0$ to $t_1$
+\end{itemize}
+
+Once the coordinates were converted into array indexes it was possible to use a 3D interpolation of the volume array in order to construct edge profiles along the ray. The following direction vectors were used in each of the planes;
+
+\begin{itemize}
+\item xy-plane - ${(1,1,0)^T,(1,-1,0)^T,(-1,1,0)^T,(-1,-1,0)^T}$
+\item xz-plane - ${(1,0,1)^T,(1,0,-1)^T,(-1,0,1)^T,(-1,0,-1)^T}$
+\item yz-plane - ${(0,1,1)^T,(0,1,-1)^T,(0,-1,1)^T,(0,-1,-1)^T}$
+\end{itemize}
+
+In order to arrive at a single edge profile for each plane the four edge profiles were averaged. Once an edge profile was obtained for each plane it was possible to differentiate and take the absolute value of the FFT in order to arrive at the MTF.
+
+\subsection{Half width calculation}
+
+The calculation of the half width of the MTF was obtained in exactly the same way for each of the two methods. A linear interpolation function was obtained from the MTF curve and by solving to find the root of the following function;
+
+\[
+F(x) = f_{MTF}(x) - 0.5
+\]
+
+it was possible to determine the point at which a 50\% modulation was achieved.
+
+\section{Polychromatic Beams}
+
+In the previous sections it was assumed that the length of the path that a ray takes as it passes through an object can be assumed to be synonymous with the attenuation of a an x-ray - this is only the case if we assume that the x-ray's are all of the same energy. In reality the x-ray's emitted by a source are produced at a range of different energies - the beam is polychromatic. In figure \ref{spectrum} the distribution of energies in a typical beam are shown (data taken from seimens xsection REF). In order to truly model the range of energies produced it is also necessary to know how particular materials attenuate x-rays of different energies. It is usually the case that x-rays with a higher energy are attenuated less than those with a lower energy. The specific dependence of attenuation on energy is a property of a particular material - in figure \ref{mu} this dependence is shown for Ag and Al (data from NIST REF).
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/spectrum.png}
+    \caption{Showing the average radius at each magnification.}
+    \label{spectrum}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/mu.png}
+    \caption{Showing the average radius at each magnification.}
+    \label{mu}
+\end{figure}
 
 
+The implementation of polychromatic beams reduces to a pre-weighting of the projections before reconstruction and follows from the polychromatic version of the beer-lambert law. In order to calculate the values for the polychromatic projections we calculate the following quantity $y$ from the allready obtained path lengths $L$;
 
+\[
+y = -log(I_{out}/\sum_E I_{in}(E)))
+\]
 
+where,
 
+\[
+I_{out} = \sum_E I_{in}(E) e^{-L \mu(E)}.
+\]
 
+$I_{in}(E)$ is the energy distribution of the polychromatic beam and $\mu(E)$ is the attenuation coefficient of the material at different energies. In this implementation the values of $I_{in}(E)$ and $\mu(E)$ where obtained at $E = 8,9,\ldots,121 KeV$ as plotted in figure \ref{spectrum} and figure \ref{mu}. The calculation of the polychromatic projections was undertaken via the Matlab script poly\_projection.m and the new projections were then used to form reconstructions as in the previous section. Due to time considerations polychromatic reconstructions were only obtained at three magnifications (1.5,2.6111 and 4.0) in each of the experimental conditions ($S0D0$,$S1D0$,$S0D1$ and $S1D1$) for two materials (Ag and Al).
 
-
-
-\section{Beam Hardening}
 \chapter{Results}
 
 \section{Introduction}
@@ -188,7 +266,7 @@ We can also look at the relative error of the measurements since we are in the p
 
 It should be noted that all the measured errors are at the sub-voxel level; the largest error seen is around $0.4\%$ which equates to an actual deviation from the true value of around $0.12$mm less then $2\%$ of the voxel width ($4.2$mm).
 
-As an independent check on the trends observed it was also possible to calculate an estimate of the radius from the parameters of the function fitted to calculate the MTF. In figure \ref{mtfradius} we see the relative error of the measurements gained via this method. As can be seen in the figure the general trends  are replicated via this secondary method however the actual errors are an order of magnitude smaller. The use of this method for calculating the radius when applied to the $S0D0$ treatment resulted in very different measurements and so is not shown in the figure. (WHY IN CONCLUSIONS)
+As an independent check on the trends observed it was also possible to calculate an estimate of the radius from the parameters of the function fitted to calculate the MTF. In figure \ref{mtfradius} we see the relative error of the measurements gained via this method. As can be seen in the figure the general trends  are replicated via this secondary method however the actual errors are an order of magnitude smaller. The use of this method for calculating the radius when applied to the $S0D0$ treatment resulted in very different measurements and so is not shown in the figure.
 
 \begin{figure}[h!]
   \centering
@@ -275,11 +353,11 @@ Each method was applied to data taken from the three coordinate planes (yz-plane
         \label{polarmtf}
 \end{figure}
 
-The $S0D0$ treatment, shown in figure \ref{S0D0half}, exhibits a linearly increasing trend but again as in the radius measurements also shows a tendency to be rather noisy. The half width measurements in the yz-plane obtained via the polar method and the measurements in the xz-plane obtained via the interpolation method (shown in \fig{howstrange}) follow an almost exactly equal trend for all magnifications. The two series agree almost exactly at all points - having checked repeatedly for any errors in the data analysis a reason for this is unknown.
+The $S0D0$ treatment, shown in figure \ref{S0D0half}, exhibits a linearly increasing trend but again as in the radius measurements also shows a tendency to be rather noisy. The half width measurements in the yz-plane obtained via the polar method and the measurements in the xz-plane obtained via the interpolation method (shown in fig{howstrange}) follow an almost exactly equal trend for all magnifications. The two series agree almost exactly at all points - having checked repeatedly for any errors in the data analysis a reason for this is unknown.
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=\textwidth]{figures/S0D0half.png}
+    \includegraphics[width=\textwidth]{figures/S0D0mtf.png}
     \caption{Showing the standard deviation of the measured position of the spheres centre}
         \label{S0D0half}
 \end{figure}
@@ -314,7 +392,7 @@ The resulting parameters are shown in table \ref{loghalffit}, along with the RMS
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=\textwidth]{figures/S1D0half.png}
+    \includegraphics[width=\textwidth]{figures/S1D0mtf.png}
     \caption{Showing the standard deviation of the measured position of the spheres centre}
         \label{S1D0half}
 \end{figure}
@@ -347,7 +425,7 @@ The fitted parameters of the model are shown in table \ref{linhalffit}.
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=\textwidth]{figures/S0D1half.png}
+    \includegraphics[width=\textwidth]{figures/S0D1mtf.png}
     \caption{Showing the standard deviation of the measured position of the spheres centre}
         \label{S0D1half}
 \end{figure}
@@ -380,7 +458,7 @@ Interp, xy-plane     &  -4.80161526 & 2.72103386 & -0.0174492  & 0.54856493 & 0.
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=\textwidth]{figures/S1D1half.png}
+    \includegraphics[width=\textwidth]{figures/S1D1mtf.png}
     \caption{Showing the standard deviation of the measured position of the spheres centre}
         \label{S1D1half}
 \end{figure}
@@ -389,12 +467,60 @@ Interp, xy-plane     &  -4.80161526 & 2.72103386 & -0.0174492  & 0.54856493 & 0.
 
 
 
-\section{Analytic MTF}
+\section{Polychromatic reconstructions}
+
+The reconstructions obtained via the polychromatic beams are shown in figure \ref{polyal} and figure \ref{polyag} - this plot shows the edge profile perpendicular to the source to detector axis in the xy-plane. As can be seen from these reconstructions the polychromatic cupping effect is clearly evident. The edge profiles show an increase in the measured attenuation at the edges and a decrease in the centre of the object. This cupping effect is significantly increased at higher magnifications especially in the $S0D0$ treatment. As magnification decreases the increase in attenuation at the boundary of the sphere becomes less significant, however the decrease in attenuation in the centre of the sphere does not seem to be influenced strongly by the magnification. It is interesting to note that the cupping effect seems to increase as magnification decreases in the $S1D0$ treatment although this decrease is significantly less obvious than the increase in the $S0D1$ treatment. As with all previous results we again see competing influences of the source and detetector treatments.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/polyal.png}
+    \caption{Showing the average radius at each magnification.}
+    \label{polyal}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=\textwidth]{figures/polyag.png}
+    \caption{Showing the average radius at each magnification.}
+    \label{polyag}
+\end{figure}
 
 
 \chapter{Conclusion}
 
+This project set out to understand how certain measurements taken from an XCT reconstruction are effected by the magnification of the system. The approach taken was to isolate two of the many possible measurement influences and through the use of computer simulation to understand their effect. The influence of focal-spot size and detector element size were modeled via a statistical process which took the mean of repeated projections subject to random offsets in the position of the source and detector elements.
+
+The clearest result which can be taken from this work is that there exists an oppositional force from the source and detector on all the quantities measured as magnification increases. An increase in one measurement in the presence of source offsets and point detectors implies a decrease in the same measurement in the presence of detector offsets and a point source. In table \ref{upsanddowns} this can be seen for all quantities measured in this project - the arrows represent how the measurement changed as magnification increased.
+
+\begin{table}
+\caption{}
+\label{upsanddowns}
+\begin{tabular}{c|cccc}
+\toprule
+{}  &     Half Width &     Relative error (radius)  &  Uncertainty (radius) &  Cupping\\
+\midrule
+S1D0     &    $\downarrow$ & $\uparrow$ & $\uparrow$ & $\downarrow$ \\
+S0D1     &    $\uparrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The combined influence of of source and detector offsets ($S1D1$) does not seem to be completely determined by the individual isolated effects - this could be beacause the system is complex and not simply the sum of its constituent parts or could be due to the influence of intermidiary processes which have not been isolated and understood.
+
+In both the measurement of the MTF half widths and the relative error of the radius measurement the influence of the detector seems to dominate at low magnifications whilst at higher magnifications the source influence dominates - this can be understood from a purely proximity based argument. At low magnifications the object is closer to the detector and so small deviations in the position of detection lead to possibly large increases in the projection intensities whilst small deviations in the position of the source translate into much smaller deviations in the projection intensities. This argument can be applied in a similar manner at higher magnifications when the object is closer to the source and so its influence dominates.
+
+The results gained in this project seem to show that the change from detector dominance to source dominance occurs at around a magnification of $2.0$ - this is the point at which the source to iso-centre distance is equal to the iso-centre to detector distance. This is evident in the crossing points of the $S1D0$ and $S0D1$ trends for both half width and relative error. Since the effective widths of the source with offsets and the detector with offsets is $1mm$ (the offsets are drawn from a standard normal distribution with $\sigma^2 = 1$) this is also the point that the projected detector/source response at the iso-centre is equal. Future work could investigate how this switch from detector dominance to source dominance is effected by the relative sizes of the detector and the source. A hypothesis for this investigation is that as the source size decreases in relation to the detector size the point at which the source dominance occurs should be at an increasing magnification - more specifically if the source size is half that of the detector size then source dominance should occur at a magnification of $3.0$.
+
+\nocite{Arabi2010,Coban2006,Fessl er2009,Friedman2013,Hilpert2007,hounsfield1973computerized,
+        Jaenisch2008,JointCommitteeforGuidesinMetrologyJCGM2008,Kerr2010,Meganck2009,
+        Muller2012,Redgrave2008,Takenaga2014,Radon1986,Flack2005,DeChiffre2014,Feldkamp1984
+        Fle2014,Kruth2011,Hiller2012}
 
 
+
+
+
+\bibliography{allrefs}
+\bibliographystyle{plain}
 
 \end{document}
