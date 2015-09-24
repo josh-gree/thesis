@@ -51,11 +51,49 @@ Computed Tomography (CT) is a method of using penetrating electromagnetic waves,
 
 The increasing complexity of modern industrial components means that the standard tools for producing dimensional measurements, that of coordinate measuring machines (CMM’s), are unable to control for all component tolerances. In using a CMM it is not possible produce measurements of the internal structure of a component, only external geometries can be measured. One of the fundamental benefits of using CT for metrology is the ability to determine both the internal and external geometries of a component in a single process. The use of CT also enables the dual determination of material properties, such as defects, whilst also making dimensional measurements. Using a CT to take dimensional measurements also has the added benefit of being able to perform measurement of the whole geometry in a single scan; when using a CMM scan time is an increasing function of the number of properties to be measured.
 
-The process of taking dimensional measurements via CT is subject to many sources of uncer- tainty. These include; the size of the x-ray focal spot and its time dependent drift, the performance of the detector cells, the magnification used, number of projections acquired, the reconstruction algorithm used and any data post-processing such as surface extraction and fitting. The complexity of a CT machine and the many sources of possible uncertainty make the statement of a total measurement uncertainty a difficult proposition. An excellent outline of the use of CT in industry is given in [REF1] and the sources of measurement uncertainty are outlined in [REF4].
+The process of taking dimensional measurements via CT is subject to many sources of uncertainty. These include; the size of the x-ray focal spot and its time dependent drift, the performance of the detector cells, the magnification used, number of projections acquired, the reconstruction algorithm used and any data post-processing such as surface extraction and fitting. The complexity of a CT machine and the many sources of possible uncertainty make the statement of a total measurement uncertainty a difficult proposition. An excellent outline of the use of CT in industry is given in [REF1] and the sources of measurement uncertainty are outlined in [REF4].
+
+\section{Tomographic Reconstruction - FDK Algorithm}
+
+The reconstruction of a volume from its projections can be accomplished in a variety of ways - the choice of method depends fundamentally on the geometry of the CT system. The method chosen for this project is the FDK (REF) method for cone beam projections. A cone beam projection algorithm is advantageous since it allows for the acquisition of all projection data in a single rotation. This is in contrast to fan beam projections which can only reconstruct a single slice of an object and so it is necessary to move the source and linear detector both around the object and in the axial direction in order to reconstruct a whole volume.
+
+The projections for a cone beam geometry can be represented by the function $\rho(\beta,a,b)$ where $\Beta$ is the angle of rotation for the source and detector, $a$ is the cone angle of a single ray in the vertical direction and $b$ is the fan angle in the horizontal direction. The fundamental idea of the FDK algorithm is to take the projections and backproject along the rays such that they converge at the source. The summation of these backprojections from all projection angles results in a reconstruction of the volume. This naive approach leads to a flawed reconstruction since some of the positions within the volume have more rays passing through them and so are over represented in the final reconstruction. The application of a suitable pre-weighting and filtration of the projections before calculating the backprojection is able to minimise the effect from the over representation of some of the points within the volume.
+
+The pre-weighted and filtred projections are given by;
+
+\[
+\tilde{\rho}(\beta,a,b) = (\frac{R}{\sqrt{R^2+a^2+b^2}}\rho(\beta,a,b))\ast g(a)
+\]
+
+Where $R$ is the distance from the source to the isocentre (rotation centre) and the function $g(\dot)$ is a ramp filter - the $\ast$ operation is the convolution. The Backprojection operation over all angles $\beta$ can be expressed as follows;
+
+\[
+f(x,y,z) = \int_0^{2\pi} \frac{R^2}{U(x,y,\beta)^2} \tilde{\rho}(\beta,a(x,y,\beta),b(x,y,z,\beta)) d\beta
+\]
+
+By fixing the value of $z$ we are able to perform what amounts to a single fan beam reconstruction in which the source and detector lie in a non horizontal plane. This also allows the reconstruction to be performed in parallel since for a given $z$ there is no dependence on the values in another horizontal slice through the volume. The functions $a(x,y,\beta)$ and $b(x,y,z,\beta)$ simply alow us to select the projection points which contribute to the volume in a given z-palne. These functions are given by;
 
 
-\section{Computed Tomography}
-\section{Simulation}
+\[
+a(x,y,\beta) = R[\frac{-x \sin \beta + y \cos \beta}{U(x,y,\beta)}]
+\]
+\[
+b(x,y,z,\beta) = z[\frac{R}{U(x,y,\beta)}]
+\]
+
+where;
+
+\[
+U(x,y,\beta) = R + x \cos \beta + y \sin \beta
+\]
+
+The reuslts of these two functions are not necessarily associated to points avalible in the collected projections and so require the interpolation of the projection data.  
+
+
+\section{Modulation Transfer Function (MTF)}
+
+\section{CT Simulation}
+
 \chapter{Experimental Methodolgy}
 \section{Intoduction}
 
