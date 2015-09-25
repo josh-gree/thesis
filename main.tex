@@ -29,49 +29,54 @@
 
 \chapter{Introduction}
 
+This report is a continuation of work undertaken by a previous masters student (\cite{Athens2015}) into the use of a simulated XCT system. The focus of this report is on the observed trends in a range of measurements taken from CT volume reconstructions as the magnification of the system is varied. The use of an analytic ray-tracing approximation to physical X-ray generation has been implemented along with the use of monte-carlo methods to approximate the physical properties of the systems focal spot and the detector elements. The main quantity that has been investigated is the measured radius of an analytically defined sphere - both an understanding of the relative error of the measurement and its variation or uncertainty has been investigated. The resolution of the imaging system with varying magnification has also been investigated via the calculation of the MTF (modulation transfer function) of the system.
+
+In chapter 2 an outline of relevant literature and some necessary theory has been outlined. The contents of chapter 3 relates to the actual methods applied to the investigation and in chapter 4 an outline of the code used and where to find it has been given. In chapter 5 the main results of this investigation have been given. Conclusions and possible further investigations are outlined in chapter 6.
+
 
 
 \chapter{Litrature Review}
 \section{Metrology}
-The ability to accurately measure physical properties is extremely important in a range of areas of human endeavour. Metrology is the science of measurement. It comprises of three main areas; the definition of internationally accepted standards of measurement, the realisation of these units via scientific methods and the establishment of traceability chains that allow all measurements to be given with a quantified uncertainty.
+The ability to accurately measure physical properties is extremely important in a range of areas of human endeavor. Metrology is the science of measurement. It comprises of three main areas; the definition of internationally accepted standards of measurement, the realisation of these units via scientific methods and the establishment of traceability chains that allow all measurements to be given with a quantified uncertainty.
 
 Due to the importance of measurement in the economic life of society a range of international treaties and agreements have been implemented in order to create a consistent standard of measure across national boundaries. The Bureau International des Poids et Mesures (BIPM) is the international coordinating body that maintains the consistency of the measurement system. Many countries have their own national measurement institutes, such as the National Physical Laboratory (NPL) in the UK and the National Institute of Standards and Technology (NIST) in the US, which work alongside BIPM.
 
 The international system of measurement units (SI system) consists of seven base units upon which many derived units can be defined. One of the main duties of BIPM is to create definitions for these base units and to agree upon methods for realising these quantities. The metre (m) was originally defined to be the length of a specific rod of platinum-iridium kept in Paris, however it is now defined to be the length of the path travelled by light in a vacuum during a time interval of 1/299 792 458 of a second. In order to realise the metre at the primary level, that of national metrological institutes, the wavelength of an iodine-stabilised helium-neon laser is used.
 
-All measurements are imperfect; they are subject to some amount of error. Error is defined to be the deviation of a measurement from the true value of the measurand. Uncertainty can be thought of as a quantitative measure of the measurements quality, which enables the comparison of independently acquired measurements. The definition of uncertainty, given in [REF6], is a;
-
+All measurements are imperfect; they are subject to some amount of error. Error is defined to be the deviation of a measurement from the true value of the measurand. Uncertainty can be thought of as a quantitative measure of the measurements quality, which enables the comparison of independently acquired measurements. The definition of uncertainty, given in \cite{JointCommitteeforGuidesinMetrologyJCGM2008}, is a;
+\begin{quote}
 ``parameter, associated with the result of a measurement, that characterizes the dispersion of the values that could reasonably be attributed to the measurand.''
+\end{quote}
 
-It is of upmost importance, for both practical and legal reasons, that any measurement can be traced, via an unbroken chain of comparisons each with a stated uncertainty, back to the international standard. The National Physical Laboratory has produced an introduction metrology which can be found in [REF3]
+It is of upmost importance, for both practical and legal reasons, that any measurement can be traced, via an unbroken chain of comparisons each with a stated uncertainty, back to the international standard. The National Physical Laboratory has produced an introduction metrology which can be found in \cite{Flack2005}.
 
 \section{Industrial CT}
 
-Computed Tomography (CT) is a method of using penetrating electromagnetic waves, usually x-rays, to produce a reconstruction of the internal structure of an object. The initial technology began with the work of Hounsfield [REF5], for which he won the 1979 Nobel Prize. The mathematical basis for this work, the Radon transform, was developed by Johann Radon [REF7] in 1917. Hounsfield’s original work had its main application in the medical sphere - enabling, for the first time, the non-invasive diagnosis of many medical conditions. The technology has since become popular for material analysis and non-destructive testing in industry. In recent times CT has been applied to the problem of dimensional metrology as an alternative to 3D coordinate measurement systems.
+Computed Tomography (CT) is a method of using penetrating electromagnetic waves, usually x-rays, to produce a reconstruction of the internal structure of an object. The initial technology began with the work of Hounsfield \cite{hounsfield1973computerized}, for which he won the 1979 Nobel Prize. The mathematical basis for this work, the Radon transform, was developed by Johann Radon \cite{Radon1986} in 1917. Hounsfield’s original work had its main application in the medical sphere - enabling, for the first time, the non-invasive diagnosis of many medical conditions. The technology has since become popular for material analysis and non-destructive testing in industry. In recent times CT has been applied to the problem of dimensional metrology as an alternative to 3D coordinate measurement systems.
 
 The increasing complexity of modern industrial components means that the standard tools for producing dimensional measurements, that of coordinate measuring machines (CMM’s), are unable to control for all component tolerances. In using a CMM it is not possible produce measurements of the internal structure of a component, only external geometries can be measured. One of the fundamental benefits of using CT for metrology is the ability to determine both the internal and external geometries of a component in a single process. The use of CT also enables the dual determination of material properties, such as defects, whilst also making dimensional measurements. Using a CT to take dimensional measurements also has the added benefit of being able to perform measurement of the whole geometry in a single scan; when using a CMM scan time is an increasing function of the number of properties to be measured.
 
-The process of taking dimensional measurements via CT is subject to many sources of uncertainty. These include; the size of the x-ray focal spot and its time dependent drift, the performance of the detector cells, the magnification used, number of projections acquired, the reconstruction algorithm used and any data post-processing such as surface extraction and fitting. The complexity of a CT machine and the many sources of possible uncertainty make the statement of a total measurement uncertainty a difficult proposition. An excellent outline of the use of CT in industry is given in [REF1] and the sources of measurement uncertainty are outlined in [REF4].
+The process of taking dimensional measurements via CT is subject to many sources of uncertainty. These include; the size of the x-ray focal spot and its time dependent drift, the performance of the detector cells, the magnification used, number of projections acquired, the reconstruction algorithm used and any data post-processing such as surface extraction and fitting. The complexity of a CT machine and the many sources of possible uncertainty make the statement of a total measurement uncertainty a difficult proposition. An excellent outline of the use of CT in industry is given in \cite{DeChiffre2014} and the sources of measurement uncertainty are outlined in \cite{Fle2014}.
 
 \section{Tomographic Reconstruction - FDK Algorithm}
 
-The reconstruction of a volume from its projections can be accomplished in a variety of ways - the choice of method depends fundamentally on the geometry of the CT system. The method chosen for this project is the FDK (REF) method for cone beam projections. A cone beam projection algorithm is advantageous since it allows for the acquisition of all projection data in a single rotation. This is in contrast to fan beam projections which can only reconstruct a single slice of an object and so it is necessary to move the source and linear detector both around the object and in the axial direction in order to reconstruct a whole volume.
+The reconstruction of a volume from its projections can be accomplished in a variety of ways - the choice of method depends fundamentally on the geometry of the CT system. The method chosen for this project is the FDK (\cite{Feldkamp1984}) method for cone beam projections. A cone beam projection algorithm is advantageous since it allows for the acquisition of all projection data in a single rotation. This is in contrast to fan beam projections which can only reconstruct a single slice of an object and so it is necessary to move the source and linear detector both around the object and in the axial direction in order to reconstruct a whole volume.
 
-The projections for a cone beam geometry can be represented by the function $\rho(\beta,a,b)$ where $\Beta$ is the angle of rotation for the source and detector, $a$ is the cone angle of a single ray in the vertical direction and $b$ is the fan angle in the horizontal direction. The fundamental idea of the FDK algorithm is to take the projections and backproject along the rays such that they converge at the source. The summation of these backprojections from all projection angles results in a reconstruction of the volume. This naive approach leads to a flawed reconstruction since some of the positions within the volume have more rays passing through them and so are over represented in the final reconstruction. The application of a suitable pre-weighting and filtration of the projections before calculating the backprojection is able to minimise the effect from the over representation of some of the points within the volume.
+The projections for a cone beam geometry can be represented by the function $\rho(\beta,a,b)$ where $\beta$ is the angle of rotation for the source and detector, $a$ is the cone angle of a single ray in the vertical direction and $b$ is the fan angle in the horizontal direction. The fundamental idea of the FDK algorithm is to take the projections and backproject along the rays such that they converge at the source. The summation of these back-projections from all projection angles results in a reconstruction of the volume. This naive approach leads to a flawed reconstruction since some of the positions within the volume have more rays passing through them and so are over represented in the final reconstruction. The application of a suitable pre-weighting and filtration of the projections before calculating the back-projection is able to minimise the effect from the over representation of some of the points within the volume.
 
-The pre-weighted and filtred projections are given by;
+The pre-weighted and filtered projections are given by;
 
 \[
 \tilde{\rho}(\beta,a,b) = (\frac{R}{\sqrt{R^2+a^2+b^2}}\rho(\beta,a,b))\ast g(a)
 \]
 
-Where $R$ is the distance from the source to the isocentre (rotation centre) and the function $g(\dot)$ is a ramp filter - the $\ast$ operation is the convolution. The Backprojection operation over all angles $\beta$ can be expressed as follows;
+Where $R$ is the distance from the source to the isocentre (rotation centre) and the function $g(\cdot)$ is a ramp filter - the $\ast$ operation is the convolution. The back-projection operation over all angles $\beta$ can be expressed as follows;
 
 \[
 f(x,y,z) = \int_0^{2\pi} \frac{R^2}{U(x,y,\beta)^2} \tilde{\rho}(\beta,a(x,y,\beta),b(x,y,z,\beta)) d\beta
 \]
 
-By fixing the value of $z$ we are able to perform what amounts to a single fan beam reconstruction in which the source and detector lie in a non horizontal plane. This also allows the reconstruction to be performed in parallel since for a given $z$ there is no dependence on the values in another horizontal slice through the volume. The functions $a(x,y,\beta)$ and $b(x,y,z,\beta)$ simply alow us to select the projection points which contribute to the volume in a given z-palne. These functions are given by;
+By fixing the value of $z$ we are able to perform what amounts to a single fan beam reconstruction in which the source and detector lie in a non horizontal plane. This also allows the reconstruction to be performed in parallel since for a given $z$ there is no dependence on the values in another horizontal slice through the volume. The functions $a(x,y,\beta)$ and $b(x,y,z,\beta)$ simply allow us to select the projection points which contribute to the volume in a given z-plane. These functions are given by;
 
 
 \[
@@ -87,21 +92,38 @@ where;
 U(x,y,\beta) = R + x \cos \beta + y \sin \beta
 \]
 
-The reuslts of these two functions are not necessarily associated to points avalible in the collected projections and so require the interpolation of the projection data.  
+The results of these two functions are not necessarily associated to points available in the collected projections and so require the interpolation of the projection data.
 
 
 \section{Modulation Transfer Function (MTF)}
 
+The MTF is a description of how an imaging system changes the amplitude of a sinusoidal input. It allows for an understanding of the resolution of the system and some idea of the point at which detail in the image is lost. If an imaging system was perfect then the result of taking an image of a sinusoidal input with a given amplitude would be the same sinusoid with the same amplitude. In reaility no such perfect imaging system exists all systems exhibit some modulation (change in amplitude) of sinosiodal inputs - it is usually the case that as the frequency of the input increases the change in the amplitude gets larger. The MTF relates the frequency of a sinosidal input with the magnitude of the modulation. If the MTF of an imaging system is $0.5$ at a frequency of $2Hz$ this means that the amplitude of sinisoid with frequency of $2Hz$ would be decreased by a factor of two.
+
+The MTF of an imaging system can be calculated from the ESF (edge spread function) which is simply the profile of an edge within the image. Since an edge contains all frequencies we are able to calculate the modulation of all frequencies from this single input. From the ESF we are able to calculate the LSF (line spread function) - the response of the system to an input of a line. The LSF is related to the ESF in the following way;
+
+\[
+LSF(x) = \frac{d\;ESF(X)}{dx}
+\]
+
+From the LSF we are able to produce the MTF using the following relation;
+
+\[
+MTF(u) = |\mathcal{F}\;\{LSF(x)\}|
+\]
+
+where $\mathcal{F}$ is the Fourier transform.
+
+The process of extracting a suitable edge from the image in order to calculate the MTF can be done in many ways. The main issue with this extraction is that an edge within an image my only extend over very few pixels and so may not be of fine enough resolution to properly calculate the MTF. One method is the so called slanted edge method, described in \cite{Kerr2010}, in which an object is imaged which lies at an angle so that the edge is not aligned with the pixel array. The use of a suitable projection method allows for the edge to be over sampled by making use of extra information from neighboring pixels. In \cite{Friedman2013} a method for extracting an edge from a circular object is described - the method is explained further in a later section. A method for dealing with noisy edge profile data by using a fitted sigmoid function is described in \cite{Takenaga2014}, again this method is explained in more detail in the methodology section.
+
 \section{CT Simulation}
 
-\chapter{Experimental Methodolgy}
-\section{Intoduction}
+The use of a simulation methodology to investigate measurement uncertainties is a highly efficient method when compared with the repeated physical measurement of calibrated workpieces. In \cite{Bartscher2007} an investigation of measurement uncertainties is undertaken via the use of a software package called aRTist (\cite{Jaenisch2008}). This software package makes use of a similar analytical ray-tracing method as is used in this project. In \cite{Hiller2012} an approach based on ray-tracing and monte carlo methods is used to understand measurement uncertainities. This particlar work investigates a much wider range of measurement influences than in this project - this includes influences due to the methods for fitting a surface to the reconstructed volume data as well as geometrical and physical properties of the CT system.
 
-Section in which I outline what will follow in this chapter, also link to previous chapter!
+\chapter{Experimental Methodolgy}
 
 \section{Spherical Projections and Reconstruction}
 
-The simulation of an X-ray computed tomography (XCT) system was undertaken using a previously developed set of Matlab routines (ref to avon). These routines consisted of functions that created projections of an analytically defined sphere and also produced a reconstructed volume via the FDK method (ref to feildkamp and literature). The simulation of a single projection, under the assumption of a point source and point like detector elements, consists of the following general process;
+The simulation of an X-ray computed tomography (XCT) system was undertaken using a previously developed set of Matlab routines (\cite{Athens2015}). These routines consisted of functions that created projections of an analytically defined sphere and also produced a reconstructed volume via the FDK method (\cite{Feldkamp1984}). The simulation of a single projection, under the assumption of a point source and point like detector elements, consists of the following general process;
 
 \begin{enumerate}
 \item For the $i^{th}$ element in the detector array form the ray which connects the source at position $(s_x,s_y,s_z)^T$ with the detector element at position $(d_x^i,d_y^i,d_z^i)^T$.
@@ -132,8 +154,8 @@ The experiments undertaken for this project involved the simulation of projectio
 
 \begin{enumerate}
 \item $S0D0$ - Ideal point like source and detector elements.
-\item $S1D0$ - Random position offset applied to source (each component of the offset drawn from standard normal distribution), point like detector elements.
-\item $S0D1$ - Random position offset applied independently to each detector element (each component of the offset drawn from standard normal distribution), point like source.
+\item $S1D0$ - Random position offset applied to source. Each component of the offset drawn from standard normal distribution ($\mu = 0$, $\sigma^2 = 1$). Point like detector elements.
+\item $S0D1$ - Random position offset applied independently to each detector element. Each component of the offset drawn from standard normal distribution ($\mu = 0$, $\sigma^2 = 1$). Point like source.
 \item $S1D1$ - Random position offsets applied to both the source and the detector elements (each offset drawn from same distributions as above).
 \end{enumerate}
 
@@ -170,7 +192,7 @@ The calculation of the Modulation Transfer Function (MTF) was undertaken via two
 The need for interpolation arises since the change from interior to exterior of the sphere takes place over around 2 voxels. This means that there is not enough information to accurately calculate the MTF. It was also desirable to calculate the MTF in directions other than the coordinate axis.
 
 \subsection{Polar Method}
-The first method implemented is described in ref{A simple approach...}. From the voxel array it is possible to extract three slices (xy-plane,xz-plane and the yz-plane). The voxels in each slice can be given coordinates in the following way;
+The first method implemented is described in \cite{Friedman2013}. From the voxel array it is possible to extract three slices (xy-plane,xz-plane and the yz-plane). The voxels in each slice can be given coordinates in the following way;
 
 \[
 V_{i,j} \rightarrow (-35+\Delta x i,-35+\Delta y j)
@@ -182,7 +204,7 @@ i,j = 0,\dots,300
 \Delta x = \frac{70}{300} = \Delta y
 \]
 
-In order to form an edge profile from the slice we convert from cartesian coordinates to polar, only taking account of the radial distance from the origin. A given voxel with cartesian coordinates $(x,y)$ has radial distance $r = x^2 + y^2$. By sorting the voxels by radial distance are able to obtain an edge profile, however this profile is multi-valued in that there exist multiple voxels with the same radial distance. To produce a one-to-one mapping between radial distance and voxel intensity we associate to a particular radial distance the average of all voxels at this distance. The resulting profile is however rather noisy and as such is not suitable for calculating the MTF - in order to rectify this situation the method in ref{sigmoid ref} has been used. This method takes the noisy edge profile and fits a sigmoid function of the following form;
+In order to form an edge profile from the slice we convert from cartesian coordinates to polar, only taking account of the radial distance from the origin. A given voxel with cartesian coordinates $(x,y)$ has radial distance $r = x^2 + y^2$. By sorting the voxels by radial distance are able to obtain an edge profile, however this profile is multi-valued in that there exist multiple voxels with the same radial distance. To produce a one-to-one mapping between radial distance and voxel intensity we associate to a particular radial distance the average of all voxels at this distance. The resulting profile is however rather noisy and as such is not suitable for calculating the MTF - in order to rectify this situation the method in \cite{Takenaga2014} has been used. This method takes the noisy edge profile and fits a sigmoid function of the following form;
 
 \[
 S(x) = \frac{a}{1+e^{-b(x-c)}} + d
@@ -227,7 +249,7 @@ it was possible to determine the point at which a 50\% modulation was achieved.
 
 \section{Polychromatic Beams}
 
-In the previous sections it was assumed that the length of the path that a ray takes as it passes through an object can be assumed to be synonymous with the attenuation of a an x-ray - this is only the case if we assume that the x-ray's are all of the same energy. In reality the x-ray's emitted by a source are produced at a range of different energies - the beam is polychromatic. In figure \ref{spectrum} the distribution of energies in a typical beam are shown (data taken from seimens xsection REF). In order to truly model the range of energies produced it is also necessary to know how particular materials attenuate x-rays of different energies. It is usually the case that x-rays with a higher energy are attenuated less than those with a lower energy. The specific dependence of attenuation on energy is a property of a particular material - in figure \ref{mu} this dependence is shown for Ag and Al (data from NIST REF).
+In the previous sections it was assumed that the length of the path that a ray takes as it passes through an object can be assumed to be synonymous with the attenuation of a an x-ray - this is only the case if we assume that the x-ray's are all of the same energy. In reality the x-ray's emitted by a source are produced at a range of different energies - the beam is polychromatic. In figure \ref{spectrum} the distribution of energies in a typical beam are shown (data taken from Siemens \cite{siemens}). In order to truly model the range of energies produced it is also necessary to know how particular materials attenuate x-rays of different energies. It is usually the case that x-rays with a higher energy are attenuated less than those with a lower energy. The specific dependence of attenuation on energy is a property of a particular material - in figure \ref{mu} this dependence is shown for Ag and Al (data from NIST \cite{NIST}).
 
 \begin{figure}[h!]
   \centering
@@ -244,7 +266,7 @@ In the previous sections it was assumed that the length of the path that a ray t
 \end{figure}
 
 
-The implementation of polychromatic beams reduces to a pre-weighting of the projections before reconstruction and follows from the polychromatic version of the beer-lambert law. In order to calculate the values for the polychromatic projections we calculate the following quantity $y$ from the allready obtained path lengths $L$;
+The implementation of polychromatic beams reduces to a pre-weighting of the projections before reconstruction and follows from the polychromatic version of the beer-lambert law. In order to calculate the values for the polychromatic projections we calculate the following quantity $y$ from the already obtained path lengths $L$;
 
 \[
 y = -log(I_{out}/\sum_E I_{in}(E)))
@@ -258,11 +280,31 @@ I_{out} = \sum_E I_{in}(E) e^{-L \mu(E)}.
 
 $I_{in}(E)$ is the energy distribution of the polychromatic beam and $\mu(E)$ is the attenuation coefficient of the material at different energies. In this implementation the values of $I_{in}(E)$ and $\mu(E)$ where obtained at $E = 8,9,\ldots,121 KeV$ as plotted in figure \ref{spectrum} and figure \ref{mu}. The calculation of the polychromatic projections was undertaken via the Matlab script poly\_projection.m and the new projections were then used to form reconstructions as in the previous section. Due to time considerations polychromatic reconstructions were only obtained at three magnifications (1.5,2.6111 and 4.0) in each of the experimental conditions ($S0D0$,$S1D0$,$S0D1$ and $S1D1$) for two materials (Ag and Al).
 
+\chapter{Computatational Implementation}
+
+All code for this project can be found in the code directory of following GitHub repository - https://github.com/josh-gree/thesis. It is possible to run some of the analysis via the launch binder button in the README of the repository. The actual reconstruction data is not contained in the repository since it consists of over 200Gb of data, if required this can be provided.
+
+\section{Projections and Reconstructions}
+
+The initial simulation of projections and the resulting reconstructions was undertaken via the two scripts runscript1.m and runscript2.m, these scripts implemented a simple loop such that projections and reconstructions were undertaken for all magnifications and in each of the experimental treatments ($S0D0$,$S1D0$,$S0D1$ and $S1D1$). The use of two scripts, which conducted five repetitions each for all parameters, was undertaken due to the limit on the number of cores MATLAB was able to utilise in a single session (12 per session). The scripts were run in separate MATLAB sessions enabling the use of 24 cores. Each script made use of the function XCT.m which undertook a single projection simulation and reconstruction for a given magnification and pairing of source and detector offsets. The underlying functions, required in order for XCT.m to work, which actually calculated the projections and the reconstruction were taken from the previous work \cite{Athens2015} (dfball.m, dfimg.m, dfprj.m, dfxct.m, fdk.m and projections.m). The only change to these functions was in fdk.m in which the addition of parallel for loops enabled the total reconstruction time to be reduced from around three hours to just under 20 minutes. The additional scripts, runscript\_moresamples\_D0S1.m and runscript\_moresamples\_D1S0.m were used to obtain extra projections and reconstructions at a smaller subset of magnifications their structure and dependencies are identical to the initial scripts used. All code for projections and reconstructions can be found in "code/RadiusMeasurements/MATLAB\_files" in the repository.
+
+\section{Data Analysis}
+
+\subsection{Radius and centre measurement}
+
+From the reconstructed volumes the function post\_proc\_fixed\_thresh.m calculates the parameters of a fitted sphere via a least squares method which is implemented in the function sphereFit.m - these functions can be found in "code/RadiusMeasurements/MATLAB\_files". The parameters are then written to the files resultspc1.dat and resultspc2.dat and in the case of the extra samples to extraresultsD0S1.dat and extraresultsD1S0.dat - which can be found in  "code/RadiusMeasurements". All further data analysis is undertaken in the IPython notebook Pandas\_DataFrame\_RadiusCentre.ipynb with plots generated in Plots\_RadiusCentre.ipynb.
+
+\subsection{MTF}
+
+The calculation of MTF half-widths is accomplished in the IPython notebook MTF\_Interp\_Polar\_Data.ipynb - this can be found in "code/MTF\_and\_PSF". Without access to the reconstructed volumes this notebook will not run, however its output has been saved in the files MTFHalfInterp.p and MTFHalfPolar.p. The plots used in this document are then generated in the notebook MTF\_Interp\_Polar\_Plots.ipynb.
+
+\section{Polychromatic reconstruction}
+
+In order to produce polychromatic reconstructions it was necessary to apply a pre-weighting to the already collected projections before applying the reconstruction algorithm. The pre-weighting and reconstruction was undertaken via the function poly\_script\_ag.m (Ag attenuation data) and poly\_script\_al.m (Al attenuation data) which rely on the function poly\_projection.m which constructs the weighted projections from the originals. These files can be found in "code/Polychromatic/Matlab/". The data obtained was the plotted in the IPython files Poly\_Profiles.ipynb and Spectrum\_Atenuation\_Plots.ipynb.
+
+
 \chapter{Results}
 
-\section{Introduction}
-
-Section in which I outline what will follow in this chapter, also link to previous chapter!
 
 \section{Measurement Uncertainty}
 
@@ -351,7 +393,6 @@ The average position of the centre does not exhibit any clear trend with respect
         \label{spherecentrevar}
 \end{figure}
 
-\section{Polychromatic Projections}
 
 \section{Image Resolution - MTF half width}
 
@@ -412,7 +453,7 @@ The resulting parameters are shown in table \ref{loghalffit}, along with the RMS
 
 \begin{figure}[h!]
   \centering
-    \includegraphics[width=\textwidth]{code/MTF_and_PSF/MTF_Interp_Polar_Plots_files/MTF_Interp_Polar_Plots_6_0.png}
+    \includegraphics[width=\textwidth]{code/MTF_and_PSF/MTF_Interp_Polar_Plots_files/MTF_Interp_Polar_Plots_8_0.png}
     \caption{MTF half width along with fitted reciprocal function - S1D0}
         \label{S1D0half}
 \end{figure}
@@ -489,7 +530,7 @@ Interp, xy-plane     &  -0.42665255 & -0.05999987 & 0.82088555   & 0.004\\
 
 \section{Polychromatic reconstructions}
 
-The reconstructions obtained via the polychromatic beams are shown in figure \ref{polyal} and figure \ref{polyag} - this plot shows the edge profile perpendicular to the source to detector axis in the xy-plane. As can be seen from these reconstructions the polychromatic cupping effect is clearly evident. The edge profiles show an increase in the measured attenuation at the edges and a decrease in the centre of the object. This cupping effect is significantly increased at higher magnifications especially in the $S0D0$ treatment. As magnification decreases the increase in attenuation at the boundary of the sphere becomes less significant, however the decrease in attenuation in the centre of the sphere does not seem to be influenced strongly by the magnification. It is interesting to note that the cupping effect seems to increase as magnification decreases in the $S1D0$ treatment although this decrease is significantly less obvious than the increase in the $S0D1$ treatment. As with all previous results we again see competing influences of the source and detetector treatments.
+The reconstructions obtained via the polychromatic beams are shown in figure \ref{polyal} and figure \ref{polyag} - this plot shows the edge profile perpendicular to the source to detector axis in the xy-plane. As can be seen from these reconstructions the polychromatic cupping effect is clearly evident. The edge profiles show an increase in the measured attenuation at the edges and a decrease in the centre of the object. This cupping effect is significantly increased at higher magnifications especially in the $S0D0$ treatment. As magnification decreases the increase in attenuation at the boundary of the sphere becomes less significant, however the decrease in attenuation in the centre of the sphere does not seem to be influenced strongly by the magnification. It is interesting to note that the cupping effect seems to increase as magnification decreases in the $S1D0$ treatment although this decrease is significantly less obvious than the increase in the $S0D1$ treatment. As with all previous results we again see competing influences of the source and detector treatments.
 
 \begin{figure}[h!]
   \centering
@@ -525,16 +566,19 @@ S0D1     &    $\uparrow$ & $\downarrow$ & $\downarrow$ & $\uparrow$ \\
 \end{tabular}
 \end{table}
 
-The combined influence of of source and detector offsets ($S1D1$) does not seem to be completely determined by the individual isolated effects - this could be beacause the system is complex and not simply the sum of its constituent parts or could be due to the influence of intermidiary processes which have not been isolated and understood.
+The combined influence of of source and detector offsets ($S1D1$) does not seem to be completely determined by the individual isolated effects - this could be because the system is complex and not simply the sum of its constituent parts or could be due to the influence of intermediary processes which have not been isolated and understood.
 
 In both the measurement of the MTF half widths and the relative error of the radius measurement the influence of the detector seems to dominate at low magnifications whilst at higher magnifications the source influence dominates - this can be understood from a purely proximity based argument. At low magnifications the object is closer to the detector and so small deviations in the position of detection lead to possibly large increases in the projection intensities whilst small deviations in the position of the source translate into much smaller deviations in the projection intensities. This argument can be applied in a similar manner at higher magnifications when the object is closer to the source and so its influence dominates.
 
 The results gained in this project seem to show that the change from detector dominance to source dominance occurs at around a magnification of $2.0$ - this is the point at which the source to iso-centre distance is equal to the iso-centre to detector distance. This is evident in the crossing points of the $S1D0$ and $S0D1$ trends for both half width and relative error. Since the effective widths of the source with offsets and the detector with offsets is $1mm$ (the offsets are drawn from a standard normal distribution with $\sigma^2 = 1$) this is also the point that the projected detector/source response at the iso-centre is equal. Future work could investigate how this switch from detector dominance to source dominance is effected by the relative sizes of the detector and the source. A hypothesis for this investigation is that as the source size decreases in relation to the detector size the point at which the source dominance occurs should be at an increasing magnification - more specifically if the source size is half that of the detector size then source dominance should occur at a magnification of $3.0$.
 
-\nocite{Arabi2010,Coban2006,Fessl er2009,Friedman2013,Hilpert2007,hounsfield1973computerized,
-        Jaenisch2008,JointCommitteeforGuidesinMetrologyJCGM2008,Kerr2010,Meganck2009,
-        Muller2012,Redgrave2008,Takenaga2014,Radon1986,Flack2005,DeChiffre2014,Feldkamp1984
-        Fle2014,Kruth2011,Hiller2012}
+The measurement of the relative error in the radius and the MTF half-widths has been calculated in two independent ways with close agreement in the general trends as magnification varies. The relative error in radius measurement obtained as a byproduct of the fitting of a sigmoid function when calculating the MTF was an order of magnitude smaller than in the case of the errors associated with the fitting of a sphere to the volume data. This could be due to the smooth nature of the fitted sigmoid as well as the use of all voxel data in a single slice of the volume.
+
+One of the main challenges of this project was the length of time needed to form enough reconstructions to undersatand the variations with magnification - the use of some parlellism reduced this but it could be of great use to investigate ways of speeding up the reconstruction process further. The investigation of uncertainty in the radius measurements would benifit greatly from quicker reconstruction times since this would enable the calculation of many more repetitions at each magnification giving a much clearer picture of the variation in the measurement. This could be achived by writing the code for the XCT system in a compiled languge rather than in MATLAB and making use of many more cores on a cluster along with various parallel paradiyms such as MPI or openMP.
+
+Although some investigation of non-linear effects such as the polychromatic nature of a true x-ray source were undertaken - a much better understanding of how these effect uncertainty could be of interest. The implementation of X-ray scattering could also be investigated and added to the current virtual XCT system.
+
+
 
 
 
