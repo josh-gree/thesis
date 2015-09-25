@@ -161,7 +161,7 @@ The experiments undertaken for this project involved the simulation of projectio
 
 For each treatment projections were simulated at each of $10$ equally spaced magnifications between $1.5$ and $4.0$. At a particular magnification $10$ sets of projections were simulated. This leads to a total of $400$ projections and reconstructions - consisting of four treatments, ten magnifications and ten repetitions at each magnification.
 
-The resulting reconstructions consisted of a $301/times301/times301$ array of voxels that extended from $-35mm$ to $35mm$ in all three coordinate directions.
+The resulting reconstructions consisted of a $301\times301\times301$ array of voxels that extended from $-35mm$ to $35mm$ in all three coordinate directions.
 
 \section{Measurement}
 
@@ -210,7 +210,7 @@ In order to form an edge profile from the slice we convert from cartesian coordi
 S(x) = \frac{a}{1+e^{-b(x-c)}} + d
 \]
 
-The sigmoid function is chosen since it takes the approximate form of a step function for certain values of the parameters. An example of this function is shown in fig{sigmoid}. Once the parameters of the fitted function are known it is possible to sample the edge at $100$ points between $25mm$ and $35mm$ giving a sample rate of $10$ samples/$mm$. The sampled edge profile is then numerically differentiated and by taking the absolute value of the FFT we arrive at the MTF of the system. As a by product of this technique for calculating the MTF it is also possible to arrive at an independent estimate of the spheres radius. The parameter $d$ in the sigmoid function determines the point at which the function behaves like a step and this can be used to estimate the distance at which the transition from interior to exterior of the sphere occurs. This particular technique for measuring the radius is only possible due to the symmetrical nature of the object being imaged.
+The sigmoid function is chosen since it takes the approximate form of a step function for certain values of the parameters. Once the parameters of the fitted function are known it is possible to sample the edge at $100$ points between $25mm$ and $35mm$ giving a sample rate of $10$ samples/$mm$. The sampled edge profile is then numerically differentiated and by taking the absolute value of the FFT we arrive at the MTF of the system. As a by product of this technique for calculating the MTF it is also possible to arrive at an independent estimate of the spheres radius. The parameter $d$ in the sigmoid function determines the point at which the function behaves like a step and this can be used to estimate the distance at which the transition from interior to exterior of the sphere occurs. This particular technique for measuring the radius is only possible due to the symmetrical nature of the object being imaged.
 
 \subsection{Interpolation Method}
 
@@ -414,7 +414,7 @@ Each method was applied to data taken from the three coordinate planes (yz-plane
         \label{polarmtf}
 \end{figure}
 
-The $S0D0$ treatment, shown in figure \ref{S0D0half}, exhibits a linearly increasing trend but again as in the radius measurements also shows a tendency to be rather noisy. The half width measurements in the yz-plane obtained via the polar method and the measurements in the xz-plane obtained via the interpolation method (shown in fig{howstrange}) follow an almost exactly equal trend for all magnifications. The two series agree almost exactly at all points - having checked repeatedly for any errors in the data analysis a reason for this is unknown.
+The $S0D0$ treatment, shown in figure \ref{S0D0half}, exhibits a linearly increasing trend but again as in the radius measurements also shows a tendency to be rather noisy.
 
 \begin{figure}[h!]
   \centering
